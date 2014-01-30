@@ -15,6 +15,8 @@ Authentication with Ember is difficult. I have spent a couple of weeks trying ou
 
 My goal in this article will be to build a simple Ember application with a RESTful backend (in Rails) which provides authentication and user registration. We will also set all requests to pass the access token to our backend for authorization.
 
+<!-- more -->
+
 Here are a couple of the resources I used to build this app:
 
 * [Ember Tools](https://github.com/rpflorence/ember-tools)

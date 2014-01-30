@@ -12,6 +12,8 @@ I was frustrated as hell today finding [examples](http://groovy.329449.n5.nabble
 
 I now have something that I can use. This code has a dependency on `groovyx.net.http` libraries. This is available without even thinking by including the [Rest Plugin](http://grails.org/plugin/rest) into your app.
 
+<!-- more -->
+
 {% codeblock grails-app/conf/BuildConfig.groovy lang:java %}
     plugins {
         ...

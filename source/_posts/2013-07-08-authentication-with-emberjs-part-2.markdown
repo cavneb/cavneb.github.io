@@ -22,6 +22,8 @@ If you have not yet gone through [Part 1](/blog/2013/07/08/authentication-with-e
 
 I have created Ember applications using a variety of shortcuts ([Yeoman](https://github.com/yeoman/generator-ember), [ember-rails](https://github.com/emberjs/ember-rails)) but have found that [Ember Tools](https://github.com/rpflorence/ember-tools) is by far the best option available. It allows me to skip the [Asset Pipeline](http://coderberry.me/blog/2012/04/24/asset-pipeline-for-dummies/) completely and work directly in my public folder.
 
+<!-- more -->
+
 To get started, install Ember Tools using *npm*.
 
     $ npm install -g ember-tools

@@ -11,6 +11,8 @@ Airbrake has a Java library that can be used in your Grails application fairly e
 
 Let's take a look at how simple it is to use.
 
+<!-- more -->
+
 ### Installation
 
 Installation is very simple. Simply add the plugin to your `BuildConfig.groovy` file: 

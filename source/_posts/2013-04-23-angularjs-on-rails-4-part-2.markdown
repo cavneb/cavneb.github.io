@@ -20,6 +20,8 @@ You can either continue using the code you have created on part 1 or you can cat
     $ rake test
     $ rake screencast_sync:railscasts
 
+<!-- more -->
+
 ## Add Angular Libraries
 
 There are a couple of different ways we can add Angular into our application. [Ryan Bates](http://railscasts.com/episodes/405-angularjs) suggests using the [angular-rails gem](https://github.com/hiravgandhi/angularjs-rails). Even though this is an excellent gem which is well maintained, it's good to know how to do this without a gem.

@@ -28,6 +28,8 @@ So far, we have created an Ember application with a RailsAPI backend and can reg
 2. Force the user to the login page when they try to access a page which requires authentication.
 3. Add validation to our registration form.
 
+<!-- more -->
+
 ## Access Token In Each Request
 
 Believe it or not, this is already happening. If you look at *auth_manager.js*, you will see that in the *authenticate* function, we add the headers to each AJAX request with the access token.

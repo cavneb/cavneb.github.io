@@ -27,6 +27,8 @@ Yeoman also provides support for easy scaffolding, auto-compilation of CoffeeScr
 
 Combine these together and you have an excellent solution to bootstrapping your AngularJS applications.
 
+<!-- more -->
+
 ## Install Yeoman
 
 Install Yeoman with the following command:

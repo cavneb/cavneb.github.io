@@ -15,6 +15,8 @@ On searching the web for 'ember flash', I found a nice little library at [https:
 
 In this post, I want to share how easy it is to integrate and offer a little explanation as to how it works.
 
+<!-- more -->
+
 Instead of creating four different files (controller, message, queue and view), I found that placing all of the same file made sense. I created the file *flash.js*:
 
 ```javascript flash.js

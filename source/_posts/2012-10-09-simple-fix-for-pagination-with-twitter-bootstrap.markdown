@@ -14,6 +14,8 @@ As a Rails guy, I always perform my table pagination using mislav's [will_pagina
 
 There is a very simple fix for this which doesn't require using an [additional gem](https://github.com/yrgoldteeth/bootstrap-will_paginate).
 
+<!-- more -->
+
 Add the following CSS to your application:
 
 {% codeblock assets/stylesheets/pagination_fix.css lang:css %}

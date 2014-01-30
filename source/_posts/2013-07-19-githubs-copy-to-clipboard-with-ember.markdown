@@ -13,6 +13,8 @@ GitHub recently [replaced the copy and paste functionality](http://techcrunch.co
 
 I wanted to integrate this functionality into an app that I am writing for [Instructure](http://www.instructure.com) and have been able to do so using very little code.
 
+<!-- more -->
+
 Here's how I did it originally using Handlebars helpers:
 
 <iframe width="100%" height="500" src="http://jsfiddle.net/cavneb/GSF8Q/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>

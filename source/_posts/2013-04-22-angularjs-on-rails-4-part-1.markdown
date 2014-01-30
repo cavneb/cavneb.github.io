@@ -23,6 +23,8 @@ Here I want to create a useful Rails application using Angular. The goal is to h
 
 <div style="clear: both;"></div>
 
+<!-- more -->
+
 ## Creating the Rails Application
 
 I had a hard time deciding when I began this project on whether to use a full Rails application or a very lightweight ruby web stack like [Sinatra](http://sinatrarb.com). I also experimented with a middle-ground solution called [Rails::API](https://github.com/rails-api/rails-api) (see [Railscast](http://railscasts.com/episodes/348-the-rails-api-gem)). In the end, I used standard Rails (version 4.0.0.rc1). This gave me the flexibility I want; and for the scope of this tutorial I didn't want to distract from learning how to use Angular in an Rails application.
