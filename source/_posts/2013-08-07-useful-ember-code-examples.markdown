@@ -20,6 +20,12 @@ Sharing JavaScript via JSBin, JSFiddle, etc. is great but it can be hard to keep
   </thead>
   <tbody>
     <tr>
+      <td><a href="http://emberjs.jsbin.com/iFEvATE/2/edit">Active LI Component</a></td>
+      <td>components</td>
+      <td><a href="https://twitter.com/mixonic">@mixonic</a></td>
+      <td><a href="http://www.slideshare.net/mixonic/containers-di">EmberJS NYC Presentation</a></td>
+    </tr>
+    <tr>
       <td><a href="http://jsbin.com/edunuh/1/edit">Truncate Helper</a></td>
       <td>helpers</td>
       <td><a href="https://twitter.com/heyjinkim">@heyjinkim</a></td>

@@ -9,6 +9,8 @@ categories:
 - Rails::API
 ---
 
+<div class="update-notice">Updated Feb 20, 2014 to use Ember v1.4.1</div>
+
 {% img /images/posts/keymaster.jpg %}
 
 Authentication with Ember is difficult. I have spent a couple of weeks trying out different approaches and failing time and again. With the help of [Ryan Florence](http://ember101.com) and [Brad Humphrey](https://github.com/wbhumphrey), I have finally been able to understand how it should work and also have built a [simple application](https://github.com/cavneb/simple-auth) which uses it.
@@ -26,7 +28,7 @@ Here are a couple of the resources I used to build this app:
 
 ## Create a Rails API application
 
-Our application is going to be using the [Rails::API](https://github.com/rails-api/rails-api) (see [Railscast](http://railscasts.com/episodes/348-the-rails-api-gem))gem. By using this gem, we limit our Rails app to include only things necessary for API-driven apps. We will also be using Rails 4.0.
+Our application is going to be using the [Rails::API](https://github.com/rails-api/rails-api) (see [Railscast](http://railscasts.com/episodes/348-the-rails-api-gem)) gem. By using this gem, we limit our Rails app to include only things necessary for API-driven apps. We will also be using [Rails 4.0](http://rubyonrails.org/download).
 
     $ gem install rails-api
     $ rails-api new simple_auth --skip-bundle
@@ -37,7 +39,7 @@ We are going to use the active_model_serializers gem to format our JSON response
 ```ruby Gemfile
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.3'
 gem 'rails-api'
 gem 'sqlite3'
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -73,7 +75,6 @@ end
 ```ruby app/serializers/api_key_serializer.rb
 class ApiKeySerializer < ActiveModel::Serializer
   attributes :id, :access_token
-  
   has_one :user, embed: :id
 end
 
@@ -155,7 +156,7 @@ class ApiKey < ActiveRecord::Base
 
   scope :session, -> { where(scope: 'session') }
   scope :api,     -> { where(scope: 'api') }
-  scope :active,  -> { where("expired_at >= ?", Time.now) }
+  scope :active,  -> { where('expired_at >= ?', Time.now) }
 
   private
 

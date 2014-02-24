@@ -1,0 +1,66 @@
+http = require 'http'
+https = require 'https'
+fs = require 'fs'
+path = require 'path'
+{spawn, exec} = require 'child_process'
+semver = require 'semver'
+AdmZip = require('adm-zip')
+GitHubApi = require 'github'
+canned = require 'canned'
+
+github = new GitHubApi(version: '3.0.0')
+
+# ----------------
+# Server / Builder
+# ----------------
+
+option '-P', '--production', 'run server in production mode'
+option null, '--port [PORT]', 'listen on specified port (default 3333)'
+
+LOCAL_BRUNCH = path.join('.', 'node_modules', '.bin', 'brunch')
+
+spawnBrunch = (flags, env) ->
+  if fs.existsSync(LOCAL_BRUNCH)
+    brunch = spawn LOCAL_BRUNCH, flags, env
+  else
+    console.error 'Warning, using global brunch. Run `npm install`.'
+    brunch = spawn 'brunch', flags, env
+
+  brunch.stdout.on 'data', (data) -> console.log data.toString().trim()
+  brunch.stderr.on 'data', (data) -> console.log data.toString().trim()
+
+cannedServer = ->
+  cannedServerDir = 'cans'
+  cannedServerPort = 3000
+  can = canned(cannedServerDir, { cors: true, logger: process.stdout })
+  http.createServer(can).listen(cannedServerPort)
+  console.log 'Canned listening at port ' + cannedServerPort
+
+task 'server', 'start the brunch server in development', (options) ->
+  flags = ['w', '-s']
+  if options.production?
+    flags.push('-P')
+    process.env.BRUNCH_ENV = 'production'
+
+  if options.port?
+    flags.push '-p'
+    flags.push options.port
+
+  cannedServer()
+  spawnBrunch flags, process.env
+
+task 'build', 'build for production (delete public folder first)', ->
+  exec('rm -rf ./public')
+  process.env.BRUNCH_ENV = 'production'
+  spawnBrunch ['b', '-P'], process.env
+
+task 'test', 'run brunch in the test environment', ->
+  flags = ['w', '-s']
+  process.env.BRUNCH_ENV = 'test'
+  cannedServer()
+  spawnBrunch flags, process.env
+
+# -------------
+# Tapas Updates
+# -------------
+# ... there are no further changes below here ...
