@@ -8,7 +8,7 @@ categories:
 - Tutorials
 ---
 
-{% img /images/posts/sails-banner.png %}
+<a href="http://sailsjs.org"><img src="/images/posts/sails-banner.png" /></a>
 
 I have recently become twitterpated with a fairly new node-based web framework called Sails. It offers the same great awesomeness that Rails has been giving me for so many years along with some new and exciting features such as:
 
