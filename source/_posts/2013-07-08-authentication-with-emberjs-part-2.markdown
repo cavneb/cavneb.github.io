@@ -297,7 +297,7 @@ DS.rejectionHandler = function(reason) {
 module.exports = AuthManager;
 ```
 
-For this to work, we will need to add include jquery.cookies into our app. Download [https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js](https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js) into the folder *public/javascripts/vendor* and update the *app.js* file:
+For this to work, we will need to add include jquery.cookies into our app. Download [https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js](https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js) into the folder *public/javascripts/vendor* and update the *app.js* file:
 
     $ wget -P public/javascripts/vendor/ https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js
 
