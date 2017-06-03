@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>coderberry</title>
+  <meta name="author" content="Eric Berry">
+
+  
+  <meta name="description" content="RubyMine has become awesomer and awesomer over the years and is now my primary development tool for Rails development. One thing I&rsquo;ve found &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://coderberry.me/blog/page/3">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="coderberry" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-4164567774819314",
+    enable_page_level_ads: true
+  });
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-26417518-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">coderberry</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:coderberry.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/20/rubymine-memory-config-vmoptions/">What Is the Best Memory Config for RubyMine?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-20T08:30:00-08:00" pubdate data-updated="true">Feb 20<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>RubyMine has become <em>awesomer</em> and <em>awesomer</em> over the years and is now my primary development tool for Rails development. One thing I&rsquo;ve found frustrating however is that there is very little documentation on the best memory settings for your computer.</p>
+
+<p>I&rsquo;d like to get a thread going here with people identifying their computer, CPU, memory and config settings for RubyMine.</p>
+
+<p>The config file can be located in the <code>bin</code> folder of your application. On my mac, the file is <code>/Applications/RubyMine/bin/idea.vmoptions</code>. If it doesn&rsquo;t exist you may need to create it.</p>
+
+<p>So here are my computer specs and vmoptions:</p>
+
+<p>MacBook Pro Retina 2.6 GHz Intel Core i7 with 16 GB memory</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-Xms128m
+</span><span class='line'>-Xmx2048m
+</span><span class='line'>-XX:MaxPermSize=500m
+</span><span class='line'>-XX:ReservedCodeCacheSize=128m
+</span><span class='line'>-XX:+UseCodeCacheFlushing
+</span><span class='line'>-XX:+UseCompressedOops</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Please feel free to post yours in the comments below. I believe this will help others optimize their RubyMine experience.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/13/bootstrapping-angularjs-with-yeoman/">Bootstrapping AngularJS With Yeoman</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-13T16:13:00-08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div style="width: 242px;
+      height: 388px;
+      margin: 10px 30px 10px 0;
+      float: left;
+      background: transparent url(/images/posts/angular-yeoman.png) top left no-repeat;">
+</div>
+
+
+<p><strong><a href="http://angularjs.org/">AngularJS</a> is awesome.</strong></p>
+
+<p>If you are here, you already know that. If not, <a href="http://www.youtube.com/user/angularjs">watch these videos</a>.</p>
+
+<p><strong><a href="http://yeoman.io">Yeoman</a> is awesome.</strong></p>
+
+<p>If you are here, you <em>might</em> not know that already. It is similar to <a href="http://middlemanapp.com">middleman</a> but is Node driven instead of ruby. For a kickstart, watch the <a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=vFacaBinGZ0">screencast by Addi Osmani</a>.</p>
+
+<p>Yeoman also provides support for easy scaffolding, auto-compilation of CoffeeScript and Compass, live preview servers and more. Yup, I was just listing some of the features from <a href="http://yeoman.io/">their site</a>.</p>
+
+<p>Combine these together and you have an excellent solution to bootstrapping your AngularJS applications.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/13/bootstrapping-angularjs-with-yeoman/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/simple-fix-for-pagination-with-twitter-bootstrap/">Simple Fix for Pagination With Twitter Bootstrap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T16:40:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As a Rails guy, I always perform my table pagination using mislav&rsquo;s <a href="https://github.com/mislav/will_paginate">will_paginate</a> gem. However, when I use it combined with Twitter Bootstrap, I get an undesired result:</p>
+
+<p><img src="/images/posts/pagination-bad.png"></p>
+
+<p>There is a very simple fix for this which doesn&rsquo;t require using an <a href="https://github.com/yrgoldteeth/bootstrap-will_paginate">additional gem</a>.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/10/09/simple-fix-for-pagination-with-twitter-bootstrap/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/11/airbrake-exception-logging-in-your-grails-application/">Airbrake Exception Logging in Your Grails Application</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-11T14:34:00-07:00" pubdate data-updated="true">Sep 11<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Airbrake has a Java library that can be used in your Grails application fairly easily. A couple of items that the library doesn&rsquo;t do is make it simple to pass session / request data to Airbrake. I also found that the backtrace is somewhat jumbled when viewing it on Airbrake. <a href="https://github.com/plecong/grails-airbrake">Phuong LeCong</a> wrote an excellent plugin to enhance the library. I have recently published an <a href="https://github.com/cavneb/airbrake-grails">updated version</a> of the plugin (with Phuong&rsquo;s consent) to the <a href="http://grails.org/plugin/airbrake">Grails plugin repository</a>.</p>
+
+<p>Let&rsquo;s take a look at how simple it is to use.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/09/11/airbrake-exception-logging-in-your-grails-application/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/24/tools-i-use-as-a-developer/">Tools I Use as a Developer</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T15:48:00-07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div style="width: 450px;
+      height: 288px;
+      margin: 10px 30px 10px 0;
+      float: left;
+      background: transparent url(/images/posts/swiss_army_knife.jpg) 0 0 no-repeat;">
+</div>
+
+
+<p>Like any craftsman, a developer has a toolbox filled with items that helps him perform his craft. At a recent &lsquo;Tech Talk&rsquo; at <a href="http://1on1.com">One on One</a>, I presented a few tools that I use in my day-to-day workings. At their request, I have compiled a list of each tool in my toolbox.</p>
+
+<p>I would love it if you would also add in the comments the tools that you use. I&rsquo;m sure there are plenty out there that would make my life easier!</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/05/24/tools-i-use-as-a-developer/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/28/instructure-the-best-job-i-ever-left/">Instructure: The best job I ever left</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/07/useful-ember-code-examples/">Useful Ember Code Examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/19/githubs-copy-to-clipboard-with-ember/">GitHub&#8217;s Copy to Clipboard with Ember</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-3/">Authentication with EmberJS - Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-2/">Authentication with EmberJS - Part 2</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Eric Berry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'coderberry';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

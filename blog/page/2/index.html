@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>coderberry</title>
+  <meta name="author" content="Eric Berry">
+
+  
+  <meta name="description" content="Updated Feb 20, 2014 to use Ember v1.4.1 Authentication with Ember is difficult. I have spent a couple of weeks trying out different approaches and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://coderberry.me/blog/page/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="coderberry" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-4164567774819314",
+    enable_page_level_ads: true
+  });
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-26417518-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">coderberry</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:coderberry.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/08/authentication-with-emberjs-part-1/">Authentication With EmberJS - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T15:24:00-07:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="update-notice">Updated Feb 20, 2014 to use Ember v1.4.1</div>
+
+
+<p><img src="/images/posts/keymaster.jpg"></p>
+
+<p>Authentication with Ember is difficult. I have spent a couple of weeks trying out different approaches and failing time and again. With the help of <a href="http://ember101.com">Ryan Florence</a> and <a href="https://github.com/wbhumphrey">Brad Humphrey</a>, I have finally been able to understand how it should work and also have built a <a href="https://github.com/cavneb/simple-auth">simple application</a> which uses it.</p>
+
+<p>My goal in this article will be to build a simple Ember application with a RESTful backend (in Rails) which provides authentication and user registration. We will also set all requests to pass the access token to our backend for authorization.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/07/08/authentication-with-emberjs-part-1/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/07/useful-functions-in-the-ember-namespace/">Useful Functions in the Ember Namespace</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-07T10:28:00-07:00" pubdate data-updated="true">Jul 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/posts/frustrated_programmer.jpg"></p>
+
+<p>Have you been frustrated at all with Ember because of a lack of common functionality? Well, if you are you are probably like how I was and forgot to read the manual. There are a lot of really excellent functions baked right into the Ember. Here are some really useful ones that may come in handy and save you a few keystrokes. Many of the examples below are taken from the <a href="http://emberjs.com/api/">Ember API docs</a> and a few are taken from the <a href="https://github.com/discourse/discourse">Discourse source code</a>.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/07/07/useful-functions-in-the-ember-namespace/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/20/using-flash-messages-with-emberjs/">Using Flash Messages With EmberJS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-20T15:12:00-07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img width="250" height="338" src="/images/flash-to-flash.png" style="border: 0px; float: left; margin-right: 20px; -webkit-border-radius: 0px; -ms-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; -webkit-box-shadow: 0px; -moz-box-shadow: 0px; box-shadow: 0px;" /></p>
+
+<p>In a recent app I have written in Ember, I found that the need to display flash messages came up. This has always been given to me for free with Rails, so I didn&rsquo;t really think of it not being just as easy to integrate using Ember. I was wrong.. well, sort of wrong.</p>
+
+<p>On searching the web for &lsquo;ember flash&rsquo;, I found a nice little library at <a href="https://github.com/cheapRoc/ember-flash">https://github.com/cheapRoc/ember-flash</a> by <strong>cheapRoc</strong>. After some minor tweaking and customization, I was able to get it working in my app.</p>
+
+<p>In this post, I want to share how easy it is to integrate and offer a little explanation as to how it works.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/06/20/using-flash-messages-with-emberjs/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/23/angularjs-on-rails-4-part-2/">AngularJS on Rails 4 - Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-23T07:35:00-07:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Let&rsquo;s pick up where we left off. If you haven&rsquo;t already, make sure you go through <a href="/blog/2013/04/22/angularjs-on-rails-4-part-1/">Part 1</a> to create your base Rails app with the API setup.</p>
+
+<p>You can either continue using the code you have created on part 1 or you can catch up by checking out the tagged code:</p>
+
+<pre><code>$ git clone https://github.com/cavneb/angular_casts
+$ cd angular_casts
+$ git checkout step-1
+$ bundle install
+$ rake db:migrate; rake db:migrate RAILS_ENV=test
+$ rake test
+$ rake screencast_sync:railscasts
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/23/angularjs-on-rails-4-part-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/22/angularjs-on-rails-4-part-1/">AngularJS on Rails 4 - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-22T22:28:00-07:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div style="width: 242px;
+      height: 388px;
+      margin: 10px 30px 10px 0;
+      float: left;
+      background: transparent url(http://f.cl.ly/items/1n0f2g2z2w2U0s2h2t40/angular_mug.jpg) -60px -80px no-repeat;">
+</div>
+
+
+<p>Angular seems to be the big craze as of late. Some may agree and some may not, but AngularJS is one of the next big contenders for being the number one choice of developers. At the time of writing this article, AngularJS is the <a href="https://github.com/languages/JavaScript/most_watched">12th most watched project on GitHub</a>.</p>
+
+<p>Here I want to create a useful Rails application using Angular. The goal is to have a single-page application which allows us to select a screencast link on the left and view it on the right. An example of this would be found at <a href="http://ember101.com">http://ember101.com</a>.</p>
+
+<h6>Originally I had presented this topic at our local <a href="http://utruby.org">ruby users group</a>. My typical workflow is to write a blog post before presenting and have that post be a reference to my presentation. Since then, I have received a lot of feedback on how I could have enhanced the app. These posts (part 1 and 2) been re-written to reflect those changes. <em>Special thanks goes to <a href="http://tadthorley.com/">Tad Thorley</a> for providing the <a href="https://github.com/phaedryx/angularcast-example">excellent example application</a> based off of the original. Also thanks goes out to those who have commented on these posts.</em></h6>
+
+<div style="clear: both;"></div>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/22/angularjs-on-rails-4-part-1/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/28/instructure-the-best-job-i-ever-left/">Instructure: The best job I ever left</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/07/useful-ember-code-examples/">Useful Ember Code Examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/19/githubs-copy-to-clipboard-with-ember/">GitHub&#8217;s Copy to Clipboard with Ember</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-3/">Authentication with EmberJS - Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-2/">Authentication with EmberJS - Part 2</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Eric Berry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'coderberry';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

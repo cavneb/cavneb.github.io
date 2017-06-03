@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Roll your own Ajax-Based Captcha in Grails - coderberry</title>
+  <meta name="author" content="Eric Berry">
+
+  
+  <meta name="description" content="Recently, I was asked to come up with a better solution to our
+captcha needs. We have been using ReCaptcha, which is great
+but difficult to read at &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://coderberry.me/blog/2010/10/28/roll-your-own-ajax-based-captcha-in-grails">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="coderberry" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-4164567774819314",
+    enable_page_level_ads: true
+  });
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-26417518-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">coderberry</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:coderberry.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Roll Your Own Ajax-Based Captcha in Grails</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-28T00:00:00-07:00" pubdate data-updated="true">Oct 28<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently, I was asked to come up with a better solution to our
+captcha needs. We have been using <a href="http://www.google.com/recaptcha">ReCaptcha</a>, which is great
+but difficult to read at times, and has caused frustrated
+customers and lost sales. I found a great solution at
+<a href="http://www.jkdesign.org/captcha">http://www.jkdesign.org/captcha</a> which displays a number of
+graphics and let&rsquo;s the user choose the right one to prove they
+are human. Here is a screenshot of my implementation:</p>
+
+<p><img src="/images/posts/Using-Criteria-Builder-with-Projections-1.png"></p>
+
+<p>To make this work within Grails, I had to make several tweaks. The following files are required:</p>
+
+<ul>
+<li><a href="http://jqueryui.com/">JQuery 1.2+</a> (I am using version &ndash; 1.4.2)</li>
+<li><a href="http://jqueryui.com/">JQuery UI</a> (I am using version &ndash; 1.8.2)</li>
+<li><a href="http://gist.github.com/651605">jquery.simpleCaptcha-0.2.js</a></li>
+<li><a href="/files/captchaImages.zip">Captcha Images</a> placed in images/captchaImages</li>
+<li><a href="http://gist.github.com/651613">BCrypt.java</a> by Damien Miller</li>
+<li>CaptchaController.groovy (below)</li>
+</ul>
+
+
+<p>Create a new controller called Captcha. This can really be named anything, but if you do rename it, it will have to be updated in the jquery.simpleCaptcha-0.2.js file or passed in as an option via the javascript.</p>
+
+<figure class='code'><figcaption><span>CaptchaConverter.groovy</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">berry</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.berry.BCrypt</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">grails.converters.JSON</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">CaptchaController</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">index</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Generate the SALT to be used for encryption and place in session</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">captchaSalt</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">captchaSalt</span> <span class="o">?:</span> <span class="n">BCrypt</span><span class="o">.</span><span class="na">gensalt</span><span class="o">()</span>
+</span><span class='line'>        <span class="n">session</span><span class="o">.</span><span class="na">selectedCaptchaText</span> <span class="o">=</span> <span class="kc">null</span>
+</span><span class='line'>        <span class="n">session</span><span class="o">.</span><span class="na">captchaSalt</span> <span class="o">=</span> <span class="n">captchaSalt</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Modify below for custom images</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">images</span> <span class="o">=</span> <span class="o">[</span>
+</span><span class='line'>                <span class="s1">&#39;house&#39;</span><span class="o">:</span>        <span class="s1">&#39;images/captchaImages/01.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;key&#39;</span><span class="o">:</span>          <span class="s1">&#39;images/captchaImages/04.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;flag&#39;</span><span class="o">:</span>         <span class="s1">&#39;images/captchaImages/06.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;clock&#39;</span><span class="o">:</span>        <span class="s1">&#39;images/captchaImages/15.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;bug&#39;</span><span class="o">:</span>          <span class="s1">&#39;images/captchaImages/16.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;pen&#39;</span><span class="o">:</span>          <span class="s1">&#39;images/captchaImages/19.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;light bulb&#39;</span><span class="o">:</span>   <span class="s1">&#39;images/captchaImages/21.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;musical note&#39;</span><span class="o">:</span> <span class="s1">&#39;images/captchaImages/40.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;heart&#39;</span><span class="o">:</span>        <span class="s1">&#39;images/captchaImages/43.png&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="s1">&#39;world&#39;</span><span class="o">:</span>        <span class="s1">&#39;images/captchaImages/99.png&#39;</span>
+</span><span class='line'>        <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Create the image array to be returned in JSON format</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">size</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="na">size</span><span class="o">()</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">num</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">numImages</span> <span class="o">?</span> <span class="n">params</span><span class="o">.</span><span class="na">int</span><span class="o">(</span><span class="s1">&#39;numImages&#39;</span><span class="o">)</span> <span class="o">:</span> <span class="mi">5</span><span class="o">,</span> <span class="n">size</span><span class="o">)</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">toList</span><span class="o">()</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">used</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">()</span>
+</span><span class='line'>        <span class="o">(</span><span class="mi">1</span><span class="o">..</span><span class="na">num</span><span class="o">).</span><span class="na">each</span> <span class="o">{</span> <span class="n">i</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="kt">def</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">keys</span><span class="o">.</span><span class="na">size</span><span class="o">())</span>
+</span><span class='line'>            <span class="kt">def</span> <span class="n">item</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">idx</span><span class="o">)</span>
+</span><span class='line'>            <span class="n">keys</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">idx</span><span class="o">)</span>
+</span><span class='line'>            <span class="n">used</span> <span class="o">&lt;&lt;</span> <span class="n">item</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Select the &#39;chosen&#39; text to be used for authentication and place in session</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">selectedText</span> <span class="o">=</span> <span class="n">used</span><span class="o">[</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">used</span><span class="o">.</span><span class="na">size</span><span class="o">())]</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">hashedSelectedText</span> <span class="o">=</span> <span class="n">BCrypt</span><span class="o">.</span><span class="na">hashpw</span><span class="o">(</span><span class="n">selectedText</span><span class="o">,</span> <span class="n">captchaSalt</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">session</span><span class="o">.</span><span class="na">selectedCaptchaText</span> <span class="o">=</span> <span class="n">hashedSelectedText</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//        println &quot;SELECTED: ${hashedSelectedText}&quot;</span>
+</span><span class='line'><span class="c1">//        println &quot;USED: ${used.inspect()}&quot;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Generate object to be returned</span>
+</span><span class='line'>        <span class="kt">def</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">[</span>
+</span><span class='line'>                <span class="nl">text:</span> <span class="n">selectedText</span><span class="o">,</span>
+</span><span class='line'>                <span class="nl">images:</span> <span class="o">[]</span>
+</span><span class='line'>        <span class="o">]</span>
+</span><span class='line'>        <span class="n">used</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">u</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="n">ret</span><span class="o">[</span><span class="s1">&#39;images&#39;</span><span class="o">]</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="nl">hash:</span> <span class="n">BCrypt</span><span class="o">.</span><span class="na">hashpw</span><span class="o">(</span><span class="n">u</span><span class="o">,</span> <span class="n">captchaSalt</span><span class="o">),</span> <span class="nl">file:</span> <span class="n">images</span><span class="o">[</span><span class="n">u</span><span class="o">]]</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">render</span> <span class="n">ret</span> <span class="k">as</span> <span class="n">JSON</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What this controller does is return a JSON object with the data needed to generate the captcha. The JSON appears like so:</p>
+
+<figure class='code'><figcaption><span>data.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;heart&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;images&quot;</span><span class="p">:[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="s2">&quot;$2a$10$GTcG7U1rt7XFBi4JVImT2Oo.E3D8FCzha2772XuXm7v28Kx2LNL5S&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="s2">&quot;images/captchaImages/99.png&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="s2">&quot;$2a$10$GTcG7U1rt7XFBi4JVImT2Oa5Y/I/cXOUj30kffPqyX0qxTnAACX6O&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="s2">&quot;images/captchaImages/43.png&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="s2">&quot;$2a$10$GTcG7U1rt7XFBi4JVImT2O8zeOa4.ed1s8pZS9AgkalcSSQm9pmbi&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="s2">&quot;images/captchaImages/15.png&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="s2">&quot;$2a$10$GTcG7U1rt7XFBi4JVImT2OSNYwC4RPwhNpuPYBbeNB0j4ozoItwDK&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="s2">&quot;images/captchaImages/06.png&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="s2">&quot;$2a$10$GTcG7U1rt7XFBi4JVImT2OLv6DzHHDX0aB2AwS1YEVZMp9cEpo2sq&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="s2">&quot;images/captchaImages/01.png&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we just need to implement this in our GSP file and controller. Suppose we have a page like shown above with a pickup code and the last 4 digits of the persons phone number. With adding our captcha div and required javascript, our GSP would look like this:</p>
+
+<figure class='code'><figcaption><span>view.gsp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- PLACE IN HEADER --&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;${resource(dir:&#39;js&#39;,file:&#39;jquery.simpleCaptcha-0.2.js&#39;)}&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;style </span><span class="na">type=</span><span class="s">&quot;text/css&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">img</span><span class="nc">.simpleCaptcha</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">margin</span><span class="o">:</span> <span class="m">2px</span> <span class="cp">!important</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">cursor</span><span class="o">:</span> <span class="k">pointer</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nt">img</span><span class="nc">.simpleCaptchaSelected</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">margin-bottom</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">border-bottom</span><span class="o">:</span> <span class="m">2px</span> <span class="k">solid</span> <span class="nb">red</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="nt">&lt;/style&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- BODY CONTENTS --&gt;</span>
+</span><span class='line'><span class="nt">&lt;g:form</span> <span class="na">action=</span><span class="s">&quot;pickup&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;stylized myform&quot;</span> <span class="na">style=</span><span class="s">&quot;width:542px;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;h2&gt;</span>Your pickup code will be given to you by your loan consultant<span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;g:if</span> <span class="na">test=</span><span class="s">&quot;${flash.message}&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;error&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>                ${flash.message}
+</span><span class='line'>            <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/g:if&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;clearfix formField&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;label_only&quot;</span><span class="nt">&gt;</span>Pickup Code<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;g:textField</span> <span class="na">name=</span><span class="s">&quot;pickupCode&quot;</span> <span class="na">value=</span><span class="s">&quot;${pickupCode}&quot;</span> <span class="na">autocomplete=</span><span class="s">&quot;no&quot;</span> <span class="na">class=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;clearfix formField&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;label_only&quot;</span><span class="nt">&gt;</span>Last 4 Digits of Phone<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;after_checkbox&quot;</span> <span class="na">style=</span><span class="s">&quot;padding-right: 0px;&quot;</span><span class="nt">&gt;</span>(XXX) XXX-<span class="nt">&lt;/span&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;g:textField</span> <span class="na">name=</span><span class="s">&quot;lastFourDigits&quot;</span> <span class="na">value=</span><span class="s">&quot;${lastFourDigits}&quot;</span> <span class="na">autocomplete=</span><span class="s">&quot;no&quot;</span> <span class="na">class=</span><span class="s">&quot;text&quot;</span> <span class="na">maxLength=</span><span class="s">&quot;4&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;clearfix formField&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;label_only&quot;</span><span class="nt">&gt;</span>Are You Human?<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;float: left; margin-left: 10px;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>              <span class="c">&lt;!-- Begin Captcha --&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;captcha&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>              <span class="c">&lt;!-- End Captcha --&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;clearfix&quot;</span> <span class="na">style=</span><span class="s">&quot;margin-top: 15px;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;label_only&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;nbsp;</span><span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;g:submitButton</span> <span class="na">name=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Show Me My Offer&quot;</span> <span class="na">class=</span><span class="s">&quot;button&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/g:form&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#captcha&#39;</span><span class="p">).</span><span class="nx">simpleCaptcha</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">numImages</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">introText</span><span class="o">:</span> <span class="s1">&#39;&lt;p&gt;Are you human? Then pick out the &lt;strong class=&quot;captchaText&quot;&gt;&lt;/strong&gt;&lt;/p&gt;&#39;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<script src="https://gist.github.com/cavneb/1291664"></script>
+
+
+<p>Finally, we need to perform the validation on the controller side. The modified authentication action would look like the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">def</span> <span class="n">pickup</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Determine if the captcha is picked correctly</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">captchaSelection</span> <span class="o">!=</span> <span class="n">session</span><span class="o">.</span><span class="na">selectedCaptchaText</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// They selected the correct Captcha image. Continue with Authentication</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">flash</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="s">&quot;You did not click the correct image below. Please Try Again.&quot;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So there ya go. It&rsquo;s actually pretty easy and customers seem to like choosing an image much more than typing a word that is difficult to read.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Eric Berry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-28T00:00:00-07:00" pubdate data-updated="true">Oct 28<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ajax/'>Ajax</a>, <a class='category' href='/blog/categories/grails/'>Grails</a>, <a class='category' href='/blog/categories/security/'>Security</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/10/12/uploading-files-in-grails/" title="Previous Post: Uploading Files in Grails">&laquo; Uploading Files in Grails</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2010/11/24/paginator-for-those-suffering-from-postgresql-count-star-speed-issues/" title="Next Post: Paginator for those suffering from PostgreSQL count(*) speed issues">Paginator for those suffering from PostgreSQL count(*) speed issues &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/28/instructure-the-best-job-i-ever-left/">Instructure: The best job I ever left</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/07/useful-ember-code-examples/">Useful Ember Code Examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/19/githubs-copy-to-clipboard-with-ember/">GitHub's Copy to Clipboard with Ember</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-3/">Authentication with EmberJS - Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/08/authentication-with-emberjs-part-2/">Authentication with EmberJS - Part 2</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Eric Berry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'coderberry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://coderberry.me/blog/2010/10/28/roll-your-own-ajax-based-captcha-in-grails/';
+        var disqus_url = 'http://coderberry.me/blog/2010/10/28/roll-your-own-ajax-based-captcha-in-grails/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
