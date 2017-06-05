@@ -45,13 +45,3 @@ One of the benefits (limited to engineers) is there are no vacation days. Each e
 Instructure has STRONG values and makes sure their employees are aware of them. There are funny, creative propoganda-style posters throughout the office reminding us to "do what we say" and ______. Here's a video developed internally to demonstrate our company values:
 
 <iframe width="100%" height="450" src="https://www.youtube.com/embed/ZSYJhfD3BWk" frameborder="0" allowfullscreen></iframe>
-
-### Clubs
-
-### Activities
-
-### Education
-
-### What could make it better?
-
-### Why leave???
